@@ -88,7 +88,12 @@ private
   end
 
   def failure_for(notification)
-    strip_diff_colors(notification.message_lines.join("\n")) << "\n" << notification.formatted_backtrace.join("\n")
+    exception = exception_for(notification)
+    if exception.is_a?(RSpec::Expectations::MultipleExpectationsNotMetError)
+      strip_diff_colors(exception.message)
+    else
+      strip_diff_colors(notification.message_lines.join("\n")) << "\n" << notification.formatted_backtrace.join("\n")
+    end
   end
 
   def exception_for(notification)
